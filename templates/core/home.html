@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}ScholarGuard AI | Scholarship Screening{% endblock %}
+{% block content %}
+<div class="container">
+    <section class="hero-panel fade-up">
+        <div class="row align-items-center g-4 g-lg-5">
+            <div class="col-lg-7">
+                <span class="eyebrow">Fraud-aware scholarship screening</span>
+                <h1 class="hero-title">Catch risky applications before they slow down your review team.</h1>
+                <p class="hero-copy mb-0">
+                    ScholarGuard AI blends eligibility checks, OCR-powered document review, duplicate detection,
+                    and machine-learning classification into one clean review flow for administrators.
+                </p>
+                <div class="hero-actions mt-4">
+                    <a href="{% url 'submit_application' %}" class="btn btn-accent btn-lg">Start an application</a>
+                    <a href="{% url 'login' %}" class="btn btn-ghost btn-lg">Reviewer login</a>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric-pill">
+                        <strong>4-layer pipeline</strong>
+                        <span>Validation, document intelligence, fraud scoring, and admin review.</span>
+                    </div>
+                    <div class="metric-pill">
+                        <strong>Real-time signals</strong>
+                        <span>Duplicate identifiers, tamper cues, and risky submission patterns.</span>
+                    </div>
+                    <div class="metric-pill">
+                        <strong>Decision support</strong>
+                        <span>Every application lands as genuine, suspicious, or fake.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="glass-card fade-up delay-1">
+                    <div class="section-heading mb-3">
+                        <div>
+                            <p class="section-label">Decision Engine</p>
+                            <h2 class="h3">How the platform thinks</h2>
+                        </div>
+                        <span class="signal-chip status-suspicious">Always scanning</span>
+                    </div>
+                    <div class="signal-grid">
+                        <div class="signal-card">
+                            <strong>01</strong>
+                            <span>Checks applicant details against strict first-pass validation rules.</span>
+                        </div>
+                        <div class="signal-card">
+                            <strong>02</strong>
+                            <span>Reads uploaded files with OCR and estimates tamper risk.</span>
+                        </div>
+                        <div class="signal-card">
+                            <strong>03</strong>
+                            <span>Cross-references identifiers, bank details, and IP reuse signals.</span>
+                        </div>
+                        <div class="signal-card">
+                            <strong>04</strong>
+                            <span>Scores the case and routes it to the right review priority.</span>
+                        </div>
+                        <div class="signal-card wide">
+                            <strong>Admin-ready output</strong>
+                            <span>Reviewers see risk score, document status, and flagged inconsistencies in one place.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="feature-grid mt-4">
+        <article class="glass-card feature-card fade-up delay-1">
+            <span class="feature-index">A</span>
+            <h3 class="h4">Applicant-first flow</h3>
+            <p class="section-copy mb-0">Simple submission screens help students upload the right details and keep missing documents visible.</p>
+        </article>
+        <article class="glass-card feature-card fade-up delay-2">
+            <span class="feature-index">B</span>
+            <h3 class="h4">Signal-rich verification</h3>
+            <p class="section-copy mb-0">OCR, tamper scoring, and cross-document checks provide more context than manual spot checks alone.</p>
+        </article>
+        <article class="glass-card feature-card fade-up delay-3">
+            <span class="feature-index">C</span>
+            <h3 class="h4">Sharper reviewer UX</h3>
+            <p class="section-copy mb-0">Admins get a cleaner dashboard with clearer risk visualization and next-step decisions.</p>
+        </article>
+    </section>
+</div>
+{% endblock %}

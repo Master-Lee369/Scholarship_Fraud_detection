@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Start Application | ScholarGuard AI{% endblock %}
+{% block content %}
+<div class="container">
+    <section class="hero-panel page-hero compact fade-up">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="eyebrow">Application intake</span>
+                <h1 class="h2 mt-3 mb-2">Submit a scholarship application with confidence.</h1>
+                <p class="section-copy mb-0">
+                    We collect the key eligibility and identity fields first, then guide you into the document
+                    verification stage.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="score-box">
+                    <div>
+                        <span class="muted-label">Step</span>
+                        <strong>1 of 2</strong>
+                    </div>
+                    <span class="status-pill status-pending">Profile entry</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="glass-card fade-up delay-1">
+                <div class="section-heading mb-3">
+                    <div>
+                        <p class="section-label">Applicant details</p>
+                        <h2 class="h3">Core eligibility information</h2>
+                    </div>
+                </div>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        {% for field in form %}
+                        <div class="{% if field.name == 'address' %}col-12{% else %}col-md-6{% endif %}">
+                            <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <small class="helptext">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% if field.errors %}
+                            <div class="field-errors">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class="col-12 d-flex flex-wrap gap-3 align-items-center pt-2">
+                            <button type="submit" class="btn btn-accent">Continue to document upload</button>
+                            <span class="text-soft">You can review your submission status after saving.</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="glass-card fade-up delay-2">
+                <div class="section-heading mb-3">
+                    <div>
+                        <p class="section-label">What gets checked</p>
+                        <h2 class="h4">First-pass validation</h2>
+                    </div>
+                </div>
+                <ul class="bullet-list mb-0">
+                    <li>Aadhaar and contact fields are checked for format and reuse patterns.</li>
+                    <li>Income and academic performance are saved for downstream risk analysis.</li>
+                    <li>Missing or inconsistent data can increase the review attention later.</li>
+                    <li>After this step, you will upload identity, income, academic, and bank documents.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Review Application | ScholarGuard AI{% endblock %}
+{% block content %}
+<div class="container">
+    <section class="hero-panel page-hero fade-up">
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+            <div>
+                <span class="eyebrow">Application review</span>
+                <h1 class="h2 mt-3 mb-2">{{ application.full_name }}</h1>
+                <p class="section-copy mb-0">Fraud score {{ application.fraud_score|floatformat:2 }} with supporting evidence below.</p>
+            </div>
+            <div class="inline-actions">
+                <span class="status-pill {% if application.status == 'genuine' %}status-genuine{% elif application.status == 'suspicious' %}status-suspicious{% elif application.status == 'fake' %}status-fake{% elif application.status == 'approved' %}status-approved{% elif application.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                    {{ application.status }}
+                </span>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-ghost">Back</a>
+            </div>
+        </div>
+        <div class="stat-grid mt-4">
+            <div class="stat-tile">
+                <span class="stat-label">Risk score</span>
+                <strong class="stat-value">{{ application.fraud_score|floatformat:2 }}</strong>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Documents</span>
+                <strong class="stat-value">{{ docs|length }}</strong>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Flags</span>
+                <strong class="stat-value">{{ flags|length }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <div class="doc-grid mb-4">
+        <div class="doc-card fade-up delay-1">
+            <h2 class="h5">Fraud flags</h2>
+            {% if flags %}
+            <div class="flag-grid">
+                {% for flag in flags %}
+                <div class="flag-card">
+                    <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                        <strong>{{ flag.get_flag_type_display }}</strong>
+                        <span class="status-pill {% if flag.severity == 'high' %}status-fake{% elif flag.severity == 'medium' %}status-suspicious{% else %}status-genuine{% endif %}">
+                            {{ flag.severity }}
+                        </span>
+                    </div>
+                    <p class="text-soft mb-0">{{ flag.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-soft mb-0">No fraud flags recorded.</p>
+            {% endif %}
+        </div>
+        <div class="doc-card fade-up delay-2">
+            <h2 class="h5">Documents</h2>
+            {% if docs %}
+            <ul class="mini-list mb-0">
+                {% for doc in docs %}
+                <li>
+                    {{ doc.get_doc_type_display }}
+                    {% if doc.file %}<a href="{{ doc.file.url }}">View file</a>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-soft mb-0">No documents uploaded.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="glass-card fade-up delay-3">
+        <div class="section-heading mb-3">
+            <div>
+                <p class="section-label">Reviewer decision</p>
+                <h2 class="h4">Finalize this application</h2>
+            </div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="notes" class="field-label">Admin notes</label>
+                <textarea id="notes" name="notes" rows="4">{{ application.admin_notes }}</textarea>
+            </div>
+            <div class="review-actions">
+                <button type="submit" name="action" value="approved" class="btn btn-success-soft">Approve</button>
+                <button type="submit" name="action" value="rejected" class="btn btn-danger-soft">Reject</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

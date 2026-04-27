@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% block title %}Application Status | ScholarGuard AI{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            {% if application %}
+            {% widthratio application.fraud_score 1 100 as fraud_percent %}
+            <section class="hero-panel page-hero fade-up">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+                    <div>
+                        <span class="eyebrow">Application status</span>
+                        <h1 class="h2 mt-3 mb-2">{{ application.full_name }}</h1>
+                        <p class="section-copy mb-0">Submitted on {{ application.submitted_at }}</p>
+                    </div>
+                    <span class="status-pill {% if application.status == 'genuine' %}status-genuine{% elif application.status == 'suspicious' %}status-suspicious{% elif application.status == 'fake' %}status-fake{% elif application.status == 'approved' %}status-approved{% elif application.status == 'rejected' %}status-rejected{% else %}status-pending{% endif %}">
+                        {{ application.status }}
+                    </span>
+                </div>
+                <div class="status-layout mt-4">
+                    <div class="score-box">
+                        <div>
+                            <span class="muted-label">Fraud risk score</span>
+                            <strong>{{ fraud_percent }}%</strong>
+                        </div>
+                        <div class="text-end">
+                            <span class="muted-label">Documents</span>
+                            <div>{{ application.documents.count }} uploaded</div>
+                        </div>
+                    </div>
+                    <div class="risk-meter">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-soft">Risk intensity</span>
+                            <strong>{{ fraud_percent }}%</strong>
+                        </div>
+                        <div class="risk-track">
+                            <div class="risk-fill" style="width: {{ fraud_percent }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="doc-grid">
+                <div class="doc-card fade-up delay-1">
+                    <h2 class="h5">Documents</h2>
+                    {% if application.documents.all %}
+                    <ul class="mini-list mb-3">
+                        {% for document in application.documents.all %}
+                        <li>
+                            {{ document.get_doc_type_display }}
+                            {% if document.file %}<a href="{{ document.file.url }}">View file</a>{% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-soft">No documents uploaded yet.</p>
+                    {% endif %}
+                    {% if not application.has_all_required_documents %}
+                    <a href="{% url 'upload_documents' application.pk %}" class="btn btn-accent btn-sm">Upload remaining documents</a>
+                    {% endif %}
+                </div>
+                <div class="doc-card fade-up delay-2">
+                    <h2 class="h5">Fraud flags</h2>
+                    {% if application.flags.all %}
+                    <div class="flag-grid">
+                        {% for flag in application.flags.all %}
+                        <div class="flag-card">
+                            <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                                <strong>{{ flag.get_flag_type_display }}</strong>
+                                <span class="status-pill {% if flag.severity == 'high' %}status-fake{% elif flag.severity == 'medium' %}status-suspicious{% else %}status-genuine{% endif %}">
+                                    {{ flag.severity }}
+                                </span>
+                            </div>
+                            <p class="text-soft mb-0">{{ flag.description }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-soft mb-0">No fraud flags have been raised yet.</p>
+                    {% endif %}
+                </div>
+                <div class="doc-card fade-up delay-3">
+                    <h2 class="h5">Current interpretation</h2>
+                    <ul class="mini-list mb-0">
+                        <li><strong>Status:</strong> {{ application.status|title }}</li>
+                        <li><strong>Score basis:</strong> duplicate signals, document verification, and fraud model output.</li>
+                        <li><strong>Admin notes:</strong> {{ application.admin_notes|default:"No reviewer notes yet." }}</li>
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <div class="glass-card empty-state fade-up">
+                <span class="eyebrow">No submission yet</span>
+                <h1 class="h3 mt-3 mb-3">No application submitted yet</h1>
+                <p class="section-copy mb-4">Start a scholarship application to begin the verification process.</p>
+                <a href="{% url 'submit_application' %}" class="btn btn-accent">Start application</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard | ScholarGuard AI{% endblock %}
+{% block content %}
+<div class="container">
+    <section class="hero-panel page-hero fade-up">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="eyebrow">Reviewer command center</span>
+                <h1 class="h2 mt-3 mb-2">Admin Dashboard</h1>
+                <p class="section-copy mb-0">
+                    Track the application mix, spot high-risk cases faster, and move from signals to action
+                    without digging through scattered pages.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="score-box">
+                    <div>
+                        <span class="muted-label">Average fraud score</span>
+                        <strong>{{ stats.avg_fraud_score|floatformat:2 }}</strong>
+                    </div>
+                    <span class="status-pill status-suspicious">Live queue</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stat-grid mb-4">
+        <div class="stat-tile fade-up delay-1">
+            <span class="stat-label">Total applications</span>
+            <strong class="stat-value">{{ stats.total }}</strong>
+        </div>
+        <div class="stat-tile fade-up delay-1">
+            <span class="stat-label">Pending</span>
+            <strong class="stat-value">{{ stats.pending }}</strong>
+        </div>
+        <div class="stat-tile fade-up delay-2">
+            <span class="stat-label">Genuine</span>
+            <strong class="stat-value">{{ stats.genuine }}</strong>
+        </div>
+        <div class="stat-tile fade-up delay-2">
+            <span class="stat-label">Suspicious</span>
+            <strong class="stat-value">{{ stats.suspicious }}</strong>
+        </div>
+        <div class="stat-tile fade-up delay-3">
+            <span class="stat-label">Fake</span>
+            <strong class="stat-value">{{ stats.fake }}</strong>
+        </div>
+    </section>
+
+    <div class="review-grid mb-4">
+        <div class="chart-panel fade-up delay-2">
+            <div class="section-heading mb-3">
+                <div>
+                    <p class="section-label">Portfolio mix</p>
+                    <h2 class="h4">Classification overview</h2>
+                </div>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="fraudChart"></canvas>
+            </div>
+        </div>
+        <div class="mini-panel fade-up delay-3">
+            <div class="section-heading mb-3">
+                <div>
+                    <p class="section-label">Latest review signals</p>
+                    <h2 class="h4">Recent flags</h2>
+                </div>
+            </div>
+            {% if recent_flags %}
+            <ul class="mini-list mb-0">
+                {% for flag in recent_flags %}
+                <li>
+                    <strong>{{ flag.application.full_name }}</strong>
+                    <span class="d-block">{{ flag.get_flag_type_display }}: {{ flag.description|truncatechars:100 }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-soft mb-0">No fraud flags recorded yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="table-panel fade-up delay-3">
+        <div class="section-heading mb-3">
+            <div>
+                <p class="section-label">Priority queue</p>
+                <h2 class="h4">Suspicious applications</h2>
+            </div>
+        </div>
+        {% if flagged %}
+        <div class="table-responsive">
+            <table class="table-sleek">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Risk score</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in flagged %}
+                    {% widthratio app.fraud_score 1 100 as fraud_percent %}
+                    <tr>
+                        <td>
+                            <strong>{{ app.full_name }}</strong>
+                        </td>
+                        <td>
+                            <div class="risk-track mb-2">
+                                <div class="risk-fill" style="width:{{ fraud_percent }}%"></div>
+                            </div>
+                            <span class="text-soft">{{ fraud_percent }}%</span>
+                        </td>
+                        <td>
+                            <span class="status-pill {% if app.status == 'genuine' %}status-genuine{% elif app.status == 'suspicious' %}status-suspicious{% elif app.status == 'fake' %}status-fake{% else %}status-pending{% endif %}">
+                                {{ app.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'review_application' app.pk %}" class="btn btn-ghost btn-sm">Review</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-soft mb-0">No suspicious applications are waiting for review right now.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('fraudChart');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Genuine', 'Suspicious', 'Fake', 'Pending'],
+      datasets: [{
+        data: [{{ stats.genuine }}, {{ stats.suspicious }}, {{ stats.fake }}, {{ stats.pending }}],
+        backgroundColor: ['#27845a', '#c7962f', '#b33b34', '#728288'],
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            boxWidth: 10,
+            padding: 18,
+            color: '#56686f',
+            font: {
+              family: 'Sora',
+              size: 12
+            }
+          }
+        }
+      },
+      cutout: '66%'
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Login | ScholarGuard AI{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="auth-shell">
+        <div class="hero-panel auth-side fade-up">
+            <span class="eyebrow">Secure access</span>
+            <h2 class="h1 mt-3">Enter the review and application workspace.</h2>
+            <p class="section-copy">
+                Applicants can track their submissions, while administrators can step into the fraud review
+                dashboard with clearer signals and faster context.
+            </p>
+            <div class="timeline">
+                <div class="timeline-step">
+                    <strong>1</strong>
+                    <span>Track application progress and document completion.</span>
+                </div>
+                <div class="timeline-step">
+                    <strong>2</strong>
+                    <span>Inspect OCR verification, tamper checks, and duplicate flags.</span>
+                </div>
+                <div class="timeline-step">
+                    <strong>3</strong>
+                    <span>Review machine-learning classifications with admin notes.</span>
+                </div>
+            </div>
+        </div>
+        <div class="glass-card auth-card fade-up delay-1">
+            <span class="section-label">Welcome back</span>
+            <h1 class="h2 mt-2">Login</h1>
+            <p class="section-copy mb-4">Use your account to continue the scholarship screening workflow.</p>
+            <form method="post">
+                {% csrf_token %}
+                {% if form.non_field_errors %}
+                <div class="field-errors mb-3">{{ form.non_field_errors }}</div>
+                {% endif %}
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="field-errors">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-accent w-100">Sign in</button>
+            </form>
+            <div class="subtle-divider"></div>
+            <p class="mb-0 text-center text-soft">
+                New here? <a href="{% url 'register' %}">Create an account</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

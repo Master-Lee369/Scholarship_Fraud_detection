@@ -1,0 +1,4 @@
+[27/Apr/2026 11:24:08] "GET / HTTP/1.1" 200 2509
+[27/Apr/2026 11:24:08] "GET /accounts/login/ HTTP/1.1" 200 1809
+[27/Apr/2026 11:24:08] "GET /apply/ HTTP/1.1" 302 0
+[27/Apr/2026 11:24:08] "GET /accounts/login/?next=/apply/ HTTP/1.1" 200 1809

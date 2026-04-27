@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Upload Documents | ScholarGuard AI{% endblock %}
+{% block content %}
+{% widthratio uploaded|length 4 100 as docs_percent %}
+<div class="container">
+    <section class="hero-panel page-hero compact fade-up">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <span class="eyebrow">Document verification</span>
+                <h1 class="h2 mt-3 mb-2">Upload the files that support your application.</h1>
+                <p class="section-copy mb-0">
+                    OCR, tamper screening, duplicate checks, and cross-document validation start as soon as the
+                    required set is complete.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="score-box">
+                    <div>
+                        <span class="muted-label">Application</span>
+                        <strong>{{ application.full_name }}</strong>
+                    </div>
+                    <span class="status-pill status-pending">{{ uploaded|length }}/4 documents</span>
+                </div>
+            </div>
+        </div>
+        <div class="risk-meter">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-soft">Upload progress</span>
+                <strong>{{ docs_percent }}%</strong>
+            </div>
+            <div class="risk-track">
+                <div class="risk-fill" style="width: {{ docs_percent }}%"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="glass-card mb-4 fade-up delay-1">
+                <div class="section-heading mb-3">
+                    <div>
+                        <p class="section-label">Required set</p>
+                        <h2 class="h3">Upload supporting documents</h2>
+                    </div>
+                </div>
+                <p class="section-copy mb-4">
+                    Add one file per category. Once the full set is present, the system verifies document content,
+                    raises fraud flags where needed, and updates the application classification.
+                </p>
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3 align-items-end">
+                        {% for field in form %}
+                        <div class="{% if field.name == 'file' %}col-md-8{% else %}col-md-4{% endif %}">
+                            <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                            <div class="field-errors">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-accent">Upload document</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="doc-grid">
+                <div class="doc-card fade-up delay-2">
+                    <h3 class="h5">Uploaded now</h3>
+                    {% if uploaded %}
+                    <ul class="mini-list mb-0">
+                        {% for document in uploaded %}
+                        <li>
+                            {{ document.get_doc_type_display }}
+                            {% if document.file %}<a href="{{ document.file.url }}">View file</a>{% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-soft mb-0">No documents uploaded yet.</p>
+                    {% endif %}
+                </div>
+                <div class="doc-card fade-up delay-3">
+                    <h3 class="h5">Still needed</h3>
+                    {% if missing_docs %}
+                    <ul class="mini-list mb-0">
+                        {% for doc_type in missing_docs %}
+                        <li>{{ doc_type|title }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="mb-0"><span class="status-pill status-approved">All required documents uploaded</span></p>
+                    {% endif %}
+                </div>
+                <div class="doc-card fade-up delay-3">
+                    <h3 class="h5">What happens next</h3>
+                    <ul class="mini-list mb-0">
+                        <li>OCR reads visible text from images and PDFs.</li>
+                        <li>Image tamper checks estimate potential manipulation.</li>
+                        <li>Cross-verification compares your name and date of birth across files.</li>
+                        <li>The final application gets a risk score and classification.</li>
+                    </ul>
+                </div>
+                <div class="doc-card fade-up delay-2">
+                    <h3 class="h5">Accepted files</h3>
+                    <ul class="mini-list mb-0">
+                        <li>JPG, PNG, and PDF only.</li>
+                        <li>Maximum file size is 5 MB per upload.</li>
+                        <li>Each document type can be uploaded once.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

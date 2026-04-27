@@ -1,0 +1,78 @@
+{
+  "accuracy": 0.9025,
+  "macro_f1": 0.873,
+  "weighted_f1": 0.9014,
+  "train_rows": 6400,
+  "test_rows": 1600,
+  "class_distribution": {
+    "fake": 0.2515,
+    "genuine": 0.5537,
+    "suspicious": 0.1948
+  },
+  "confusion_matrix": {
+    "genuine": {
+      "genuine": 860,
+      "suspicious": 19,
+      "fake": 7
+    },
+    "suspicious": {
+      "genuine": 36,
+      "suspicious": 244,
+      "fake": 32
+    },
+    "fake": {
+      "genuine": 24,
+      "suspicious": 38,
+      "fake": 340
+    }
+  },
+  "classification_report": {
+    "fake": {
+      "precision": 0.8970976253298153,
+      "recall": 0.845771144278607,
+      "f1-score": 0.8706786171574903,
+      "support": 402.0
+    },
+    "genuine": {
+      "precision": 0.9347826086956522,
+      "recall": 0.9706546275395034,
+      "f1-score": 0.9523809523809524,
+      "support": 886.0
+    },
+    "suspicious": {
+      "precision": 0.8106312292358804,
+      "recall": 0.782051282051282,
+      "f1-score": 0.7960848287112562,
+      "support": 312.0
+    },
+    "accuracy": 0.9025,
+    "macro avg": {
+      "precision": 0.8808371544204493,
+      "recall": 0.8661590179564641,
+      "f1-score": 0.8730481327498997,
+      "support": 1600.0
+    },
+    "weighted avg": {
+      "precision": 0.9011047376303303,
+      "recall": 0.9025,
+      "f1-score": 0.9013754965404668,
+      "support": 1600.0
+    }
+  },
+  "top_feature_importance": {
+    "flag_count": 0.3078,
+    "verified_document_ratio": 0.1321,
+    "max_tamper_score": 0.0974,
+    "duplicate_flag_count": 0.0801,
+    "high_severity_flag_count": 0.0726,
+    "avg_tamper_score": 0.0484,
+    "document_issue_count": 0.0478,
+    "ip_count": 0.0386
+  },
+  "training_rows": 8000,
+  "trained_at": "2026-04-27T08:36:16.723969+00:00",
+  "external_dataset_path": "C:\\Users\\Lybu SS\\OneDrive\\Desktop\\scholarship_fraud_detection\\data\\external\\scholarships_data.csv",
+  "external_dataset_rows": 879,
+  "training_frame_path": "C:\\Users\\Lybu SS\\OneDrive\\Desktop\\scholarship_fraud_detection\\data\\training\\synthetic_scholarship_fraud_training.csv",
+  "model_artifact_path": "C:\\Users\\Lybu SS\\OneDrive\\Desktop\\scholarship_fraud_detection\\ml_models\\fraud_classifier.pkl"
+}
